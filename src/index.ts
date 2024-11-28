@@ -15,6 +15,7 @@ function startGame(isFinished = false) {
     if (isFinished) {
         console.log("Game Over");
         rl.close();
+        return;
     }
 
     game.showActions();
