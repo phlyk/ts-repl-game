@@ -112,3 +112,4 @@ function attack(attacker: Game, defender: Game) {
     defender.health -= attackerDamage;
     console.log(`The ${attacker.name} attacks ${defender.name} for ${attackerDamage} damage!`);
 }
+
