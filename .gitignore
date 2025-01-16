@@ -1,3 +1,4 @@
+# Npm node modules
 node_modules/
 
 # OS Specific files
@@ -6,3 +7,6 @@ node_modules/
 
 ## Windows
 Thumbs.db
+
+## Compilation files
+out/

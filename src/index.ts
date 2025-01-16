@@ -1,67 +1,59 @@
 import readline from "readline";
-import { attack, defense, Game, heal } from "./game";
-
-// Initialize the game
-const player = new Game ("DOG", 50, 10, 5);    
-const enemy = new Game ("CAT", 50, 8, 6);
+import { Player } from "./player";
+import { Game } from "./game";
 
 // Setup the readline interface
 const lineReader = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
+	input: process.stdin,
+	output: process.stdout,
 });
 
-// Random choice: 1 (Attack), 2 (Defend), 3 (Heal)
-function enemyTurn(enemy: Game, player: Game) {
-    const action = Math.floor(Math.random() * 3) + 1; 
+function gameLoop() {
+	// Check if the player or enemy has been defeated
+	if (game.player.healthPoints <= 0) {
+		console.log("You have been defeated by a Cat!");
+		lineReader.close();
+		return;
+	}
+	if (game.enemy.healthPoints <= 0) {
+		console.log("Congratulations! You defeated the Cat!");
+		lineReader.close();
+		return;
+	}
 
-    switch (action) {
-        case 1: // Attack
-            attack(enemy, player);
-            break;
+	// Show player actions
+	game.showActions();
 
-        case 2: // Defend
-            defense(enemy, player);
-            break;
+	// Player turn logic
+	lineReader.question("Choose your action: ", (action: string) => {
+        const didUserEnterPlayAction = game.handleUserAction(action);
+		if (!didUserEnterPlayAction) {
+            // User entered "4" to quit
+			lineReader.close();
+            console.log("See you next time!");
+			return;
+		}
 
-        case 3: // Heal
-            heal(enemy);
-            break;
-    }
+		// Enemy turn logic
+		if (game.enemy.healthPoints > 0) {
+			console.log(`\nThe ${enemy.name}'s turn...`);
+			game.enemyTurn();
+		}
+
+		// Show current stats
+		console.log(
+			`\nPlayer Health: ${player.healthPoints}, Enemy Health: ${enemy.healthPoints}`,
+		);
+        // loop the game
+		gameLoop();
+	});
 }
+
+// Initialize the game
+const player = new Player("DOG", 50, 10, 5);
+const enemy = new Player("CAT", 50, 8, 6);
+const game = new Game(player, enemy);
 
 // Start the game loop
-function gameLoop() {
-    if (player.health <= 0) {
-        console.log("You have been defeated by a Cat!");
-        lineReader.close();
-        return;
-    }
-    if (enemy.health <= 0) {
-        console.log("Congratulations! You defeated the Cat!");
-        lineReader.close();
-        return;
-    }
-
-    player.showActions(player.name, player.health, player.attack, player.defense);
-    lineReader.question("Choose your action: ", (action: string) => {
-        if (!player.handleAction(action, enemy)) {
-            lineReader.close();
-            return;
-        }
-
-        // Enemy turn logic
-        if (enemy.health > 0) {
-            console.log(`\nThe ${enemy.name}'s turn...`);
-            enemyTurn(enemy, player);
-        }
-        
-
-        // Show current stats
-        console.log(`\nPlayer Health: ${player.health}, Enemy Health: ${enemy.health}`);
-        gameLoop();
-    });
-}
-
 console.log("Battle begins!");
 gameLoop();
