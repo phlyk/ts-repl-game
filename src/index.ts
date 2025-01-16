@@ -3,10 +3,10 @@ import { attack, defense, Game, heal } from "./game";
 
 // Initialize the game
 const player = new Game ("DOG", 50, 10, 5);    
-const enemy = new Game ("CAT", 50, 8, 6); // Add an opponent
+const enemy = new Game ("CAT", 50, 8, 6);
 
 // Setup the readline interface
-const rl = readline.createInterface({
+const lineReader = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
@@ -34,19 +34,19 @@ function enemyTurn(enemy: Game, player: Game) {
 function gameLoop() {
     if (player.health <= 0) {
         console.log("You have been defeated by a Cat!");
-        rl.close();
+        lineReader.close();
         return;
     }
     if (enemy.health <= 0) {
         console.log("Congratulations! You defeated the Cat!");
-        rl.close();
+        lineReader.close();
         return;
     }
 
     player.showActions(player.name, player.health, player.attack, player.defense);
-    rl.question("Choose your action: ", (action: string) => {
+    lineReader.question("Choose your action: ", (action: string) => {
         if (!player.handleAction(action, enemy)) {
-            rl.close();
+            lineReader.close();
             return;
         }
 
